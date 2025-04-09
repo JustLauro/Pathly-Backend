@@ -1,0 +1,36 @@
+{
+  "nameOfTheRoute": "",
+  "startPoint": "",
+  "waypoints": [
+    {
+      "id": 1,
+      "name": "",
+      "adress": "",
+      "coordinates": ""
+    },
+    {
+      "id": 2,
+      "name": "",
+      "adress": "",
+      "coordinates": ""
+    },
+    {
+      "id": 3,
+      "name": "",
+      "adress": "",
+      "coordinates": ""
+    },
+    {
+      "id": 4,
+      "name": "",
+      "adress": "",
+      "coordinates": ""
+    },
+    {
+      "id": 5,
+      "name": "",
+      "adress": "",
+      "coordinates": ""
+    }
+  ]
+}
