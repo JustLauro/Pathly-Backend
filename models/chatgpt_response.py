@@ -1,5 +1,3 @@
-import this
-
 from pydantic import BaseModel
 
 class Waypoint(BaseModel):
