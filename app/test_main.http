@@ -9,3 +9,10 @@ GET http://127.0.0.1:8000/hello/User
 Accept: application/json
 
 ###
+
+GET http://127.0.0.1:8000/api/test-generate-route
+#?coordinates=51.341174,12.374105_51.341167,12.374111
+Accept: application/json
+
+"52.5200,13.4050", "48.8566,2.3522"
+###
