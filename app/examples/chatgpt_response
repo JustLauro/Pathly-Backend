@@ -1,6 +1,7 @@
 {
   "nameOfTheRoute": "Leipzig Stadtwanderung: Von Naumburger Straße zum Goerdelerring",
   "startPoint": "Naumburger Straße 38, 04229 Leipzig, Deutschland",
+  "endPoint": "Goerdelerring, 04109 Leipzig, Deutschland",
   "waypoints": [
     {
       "id": 1,

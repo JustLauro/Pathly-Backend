@@ -1,3 +1,5 @@
+import json
+
 from pydantic import ValidationError
 from app.models.user_input import UserInput
 from app.apis import openai
@@ -17,108 +19,109 @@ def generate_route(user_input: UserInput):
     except ValidationError as e:
         print(e)
 
-    adresses_array: list[str] = [wp.address for wp in generated_route.waypoints]
-    geoapify.start_batch_geocoding(adresses_array)
+    addresses_array: list[str] = [wp.address for wp in generated_route.waypoints]
+    geoapify.start_batch_geocoding(addresses_array)
 
-async def test_generate_route() -> str:
-    generated_route_string = """{
-  "name_of_the_route": "Leipzig Stadtwanderung: Von Naumburger Straße zum Goerdelerring",
+async def test_generate_route() -> str | None:
+    generated_route_string: str = """{
+  "nameOfTheRoute": "Leipzig Stadtwanderung: Von Naumburger Straße zum Goerdelerring",
   "startPoint": "Naumburger Straße 38, 04229 Leipzig, Deutschland",
+  "endPoint": "Goerdelerring, 04109 Leipzig, Deutschland",
   "waypoints": [
     {
       "id": 1,
       "name": "Volkspark Kleinzschocher, Leipzig, Deutschland",
-      "adress": "Kleiststraße 52, 04229 Leipzig, Deutschland",
+      "address": "Kleiststraße 52, 04229 Leipzig, Deutschland",
       "coordinates": "51.3136, 12.3197"
     },
     {
       "id": 2,
       "name": "Anton-Bruckner-Allee, Schleußig, Leipzig, Deutschland",
-      "adress": "Anton-Bruckner-Allee, 04229 Leipzig, Deutschland",
+      "address": "Anton-Bruckner-Allee, 04229 Leipzig, Deutschland",
       "coordinates": "51.3211, 12.3312"
     },
     {
       "id": 3,
       "name": "Palmengarten, Leipzig, Deutschland",
-      "adress": "Karl-Tauchnitz-Straße 25, 04107 Leipzig, Deutschland",
+      "address": "Karl-Tauchnitz-Straße 25, 04107 Leipzig, Deutschland",
       "coordinates": "51.3265, 12.3490"
     },
     {
       "id": 4,
       "name": "Clara-Zetkin-Park, Leipzig, Deutschland",
-      "adress": "Anton-Bruckner-Allee 1, 04107 Leipzig, Deutschland",
+      "address": "Anton-Bruckner-Allee 1, 04107 Leipzig, Deutschland",
       "coordinates": "51.3278, 12.3483"
     },
     {
       "id": 5,
       "name": "Musikpavillon im Clara-Zetkin-Park, Leipzig, Deutschland",
-      "adress": null,
+      "address": null,
       "coordinates": "51.3270, 12.3465"
     },
     {
       "id": 6,
       "name": "Sachsenbrücke, Leipzig, Deutschland",
-      "adress": "Anton-Bruckner-Allee, 04107 Leipzig, Deutschland",
+      "address": "Anton-Bruckner-Allee, 04107 Leipzig, Deutschland",
       "coordinates": "51.3273, 12.3450"
     },
     {
       "id": 7,
       "name": "Richard-Wagner-Hain, Leipzig, Deutschland",
-      "adress": "Karl-Tauchnitz-Straße 1, 04107 Leipzig, Deutschland",
+      "address": "Karl-Tauchnitz-Straße 1, 04107 Leipzig, Deutschland",
       "coordinates": "51.3285, 12.3457"
     },
     {
       "id": 8,
       "name": "Dittrichring, Leipzig, Deutschland",
-      "adress": "Dittrichring, 04109 Leipzig, Deutschland",
+      "address": "Dittrichring, 04109 Leipzig, Deutschland",
       "coordinates": "51.3405, 12.3702"
     },
     {
       "id": 9,
       "name": "Thomaskirche, Leipzig, Deutschland",
-      "adress": "Thomaskirchhof 18, 04109 Leipzig, Deutschland",
+      "address": "Thomaskirchhof 18, 04109 Leipzig, Deutschland",
       "coordinates": "51.3396, 12.3724"
     },
     {
       "id": 10,
       "name": "Bach-Museum Leipzig, Deutschland",
-      "adress": "Thomaskirchhof 15/16, 04109 Leipzig, Deutschland",
+      "address": "Thomaskirchhof 15/16, 04109 Leipzig, Deutschland",
       "coordinates": "51.3397, 12.3721"
     },
     {
       "id": 11,
       "name": "Barfußgäßchen, Leipzig, Deutschland",
-      "adress": "Barfußgäßchen, 04109 Leipzig, Deutschland",
+      "address": "Barfußgäßchen, 04109 Leipzig, Deutschland",
       "coordinates": "51.3409, 12.3736"
     },
     {
       "id": 12,
       "name": "Zum Arabischen Coffe Baum, Leipzig, Deutschland",
-      "adress": "Kleine Fleischergasse 4, 04109 Leipzig, Deutschland",
+      "address": "Kleine Fleischergasse 4, 04109 Leipzig, Deutschland",
       "coordinates": "51.3408, 12.3732"
     },
     {
       "id": 13,
       "name": "Mädler-Passage, Leipzig, Deutschland",
-      "adress": "Grimmaische Straße 2-4, 04109 Leipzig, Deutschland",
+      "address": "Grimmaische Straße 2-4, 04109 Leipzig, Deutschland",
       "coordinates": "51.3405, 12.3748"
     },
     {
       "id": 14,
       "name": "Auerbachs Keller, Leipzig, Deutschland",
-      "adress": "Grimmaische Straße 2-4, 04109 Leipzig, Deutschland",
+      "address": "Grimmaische Straße 2-4, 04109 Leipzig, Deutschland",
       "coordinates": "51.3405, 12.3748"
     },
     {
       "id": 15,
       "name": "Nikolaikirche, Leipzig, Deutschland",
-      "adress": "Nikolaikirchhof 3, 04109 Leipzig, Deutschland",
+      "address": "Nikolaikirchhof 3, 04109 Leipzig, Deutschland",
       "coordinates": "51.3403, 12.3761"
     },
     {
       "id": 16,
       "name": "Goerdelerring, Leipzig, Deutschland",
-      "adress": "Goerdelerring, 04109 Leipzig, Deutschland",
+      "address": "Goerdelerring, 04109 Leipzig, Deutschland",
       "coordinates": "51.3420, 12.3710"
     }
   ]
@@ -126,13 +129,16 @@ async def test_generate_route() -> str:
     generated_route: Route | None = None
 
     try:
-        generated_route = Route.model_validate(generated_route_string)
+        generated_route: Route = Route.model_validate_json(generated_route_string)
     except ValidationError as e:
         print(e)
 
-    adresses_array: list[str] = [wp.adress for wp in generated_route.waypoints]
-    result = await geoapify.start_batch_geocoding(adresses_array)
-    return result
+    addresses_array: list[str] = [wp.address if wp.address else wp.name for wp in generated_route.waypoints]
+    result = await geoapify.start_batch_geocoding(addresses_array)
+
+
+
+
 
 
     
