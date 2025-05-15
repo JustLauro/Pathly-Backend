@@ -22,7 +22,7 @@ def generate_route(user_input: UserInput):
     addresses_array: list[str] = [wp.address for wp in generated_route.waypoints]
     geoapify.start_batch_geocoding(addresses_array)
 
-async def test_generate_route() -> str | None:
+async def test_generate_route() -> list[dict]:
     generated_route_string: str = """{
   "nameOfTheRoute": "Leipzig Stadtwanderung: Von Naumburger Straße zum Goerdelerring",
   "startPoint": "Naumburger Straße 38, 04229 Leipzig, Deutschland",
@@ -134,8 +134,14 @@ async def test_generate_route() -> str | None:
         print(e)
 
     addresses_array: list[str] = [wp.address if wp.address else wp.name for wp in generated_route.waypoints]
-    result = await geoapify.start_batch_geocoding(addresses_array)
+    geocoding_result = await geoapify.start_batch_geocoding(addresses_array)
+    print(geocoding_result)
 
+    waypoints: list[str] = [f"{entry['lat']},{entry['lon']}" for entry in geocoding_result if 'lon' in entry and 'lat' in entry]
+    print(waypoints)
+
+    route = await geoapify.call_geoapify_routes(waypoints)
+    return route
 
 
 

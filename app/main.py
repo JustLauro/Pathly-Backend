@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+
 from app.services import route_service
 from app.models.user_input import UserInput
 from app.apis.geoapify import call_geoapify_routes
@@ -22,7 +24,7 @@ async def start_route_generation(user_input: UserInput):
 
 @app.get("/api/test-generate-route")
 async def test_route_generation():
-    return await route_service.test_generate_route()
+    return JSONResponse(await route_service.test_generate_route())
 
 
 
