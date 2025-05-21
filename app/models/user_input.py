@@ -1,14 +1,15 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 class AliasModel(BaseModel):
-    model_config = ConfigDict(
-        alias_generator = to_camel,
-        populate_by_name = True,
-        from_attributes = True
-    )
+    class Config:
+        allow_population_by_field_name = True
+
 
 class UserInput(AliasModel):
-    start_point: str
-    end_point: str
-    user_prompt: str
+    start_point: str = Field(..., alias = "start")
+    end_point: str = Field(..., alias = "ziel")
+    distance: str = Field(..., alias = "entfernung")
+    user_prompt: str = Field(..., alias = "optionen")
+    roundtrip: bool = Field(..., alias = "rundreise")
+    mode: str
