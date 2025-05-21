@@ -5,8 +5,22 @@ from app.apis import openai
 from app.services import route_service
 from app.models.user_input import UserInput
 from app.apis.geoapify import call_geoapify_routes
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173"
+    "http://localhost"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/api/generate-route")
 async def start_route_generation(user_input: UserInput):
