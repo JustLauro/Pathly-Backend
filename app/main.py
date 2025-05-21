@@ -11,8 +11,7 @@ app = FastAPI()
 @app.get("/api/generate-route")
 async def start_route_generation(user_input: UserInput):
     print(user_input)
-    await route_service.generate_route(user_input)
-    return user_input
+    return JSONResponse(await route_service.generate_route(user_input))
 
 @app.get("/api/test-generate-route")
 async def test_route_generation():

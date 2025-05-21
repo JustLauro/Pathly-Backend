@@ -18,25 +18,26 @@ def build_prompt(
                             {{
                                 "nameOfTheRoute": "", 
                                 "startPoint": "", 
+                                "endPoint": "",
                                 "waypoints": 
                                     [
                                         {{
                                             "id": 1, 
                                             "name": "", 
-                                            "adress": "", 
+                                            "address": "", 
                                             "coordinates": ""
                                         }}, 
                                         {{
                                             "id": 2, 
                                             "name": "", 
-                                            "adress": "", 
+                                            "address": "", 
                                             "coordinates": ""
                                         }}
                                     ]
                             }}.
                             Die Id soll bei jedem waypoint um 1 erhöht werden und einzigartig sein. Füge für jeden Wegpunkt ein Element "waypoint" mit den gesuchten Attributen 
                             hinzu und zähle dabei die Zahl am ende der Variable hoch. Setze Werte die du nicht findest (also z.b. die zu denen du keine Adresse findest) auf "null". 
-                            Bitte gib nur den JSON-String zurück, ohne ein vorrangestelles 'json' """
+                            Bitte gib ausschließlich den JSON-String zurück, ohne ein vorrangestelltes 'json' oder Anführungsstriche"""
 
     return generated_prompt
 

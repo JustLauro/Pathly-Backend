@@ -12,7 +12,7 @@ class Waypoint(AliasModel):
     id: int
     name: str
     address: str | None
-    coordinates: str
+    coordinates: str | None
 
 class Route(AliasModel):
     name_of_the_route: str
