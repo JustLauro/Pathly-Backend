@@ -1,6 +1,9 @@
 from openai import AzureOpenAI
-
 from app.models.chatgpt_response import Route
+from app.settings import settings
+
+openai_api_key: str = settings.openai_api_key
+azureai_endpoint: str = settings.azureai_endpoint
 
 
 def build_prompt(
@@ -32,7 +35,8 @@ def build_prompt(
                                     ]
                             }}.
                             Die Id soll bei jedem waypoint um 1 erhöht werden und einzigartig sein. Füge für jeden Wegpunkt ein Element "waypoint" mit den gesuchten Attributen 
-                            hinzu und zähle dabei die Zahl am ende der Variable hoch. Setze Werte die du nicht findest (also z.b. die zu denen du keine Adresse findest) auf "null"."""
+                            hinzu und zähle dabei die Zahl am ende der Variable hoch. Setze Werte die du nicht findest (also z.b. die zu denen du keine Adresse findest) auf "null". 
+                            Bitte gib nur den JSON-String zurück, ohne ein vorrangestelles 'json' """
 
     return generated_prompt
 
@@ -42,13 +46,25 @@ def prompt_azure_ai(
 ) -> str:
     built_prompt = build_prompt(start_point, end_point, user_prompt)
 
-    client = AzureOpenAI(azure_endpoint="")  # Hier muss der Endpunkt bei Azure rein
-
-    response = client.responses.create(
-        model = "gpt-4o",
-        instructions = "",
-        input = built_prompt,
-        return_type = "json",
+    client = AzureOpenAI(
+        azure_endpoint = azureai_endpoint,
+        api_key = openai_api_key,
+        api_version = "2024-04-01-preview",
+        azure_deployment = "mapsAiChatbot-gpt4o"
     )
 
-    return response.output_text
+    response = client.chat.completions.create(
+        model = "gpt-4o",
+        messages = [
+            {"role": "user", "content": built_prompt}
+        ]
+    )
+
+    # response = client.responses.create(
+    #     model="gpt-4o",
+    #     instructions = "",
+    #     input = built_prompt
+    #
+    # )
+
+    return response.choices[0].message.content

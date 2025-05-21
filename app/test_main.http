@@ -16,3 +16,12 @@ Accept: application/json
 
 "52.5200,13.4050", "48.8566,2.3522"
 ###
+
+GET http://127.0.0.1:8000/api/generate-route
+Content-Type: application/json
+
+{
+  "start_point": "Naumburger Straße 38, 04229 Leipzig",
+  "end_point": "Hauptbahnhof Leipzig",
+  "user_prompt": "Ignoriere diesen Userprompt"
+}

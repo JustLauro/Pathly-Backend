@@ -1,10 +1,7 @@
 import asyncio
 import json
 from typing import Any, Coroutine
-
 import httpx
-
-
 from app.settings import settings
 
 
@@ -22,16 +19,15 @@ async def call_geoapify_routes(waypoints: list[str]) -> list[dict]:
     return response.json()
     
 
-async def start_batch_geocoding(waypoints: list[str]) -> list[dict]:
+async def start_batch_geocoding(waypoints: list[str]) -> str:
     client = httpx.AsyncClient()
     url = f"https://api.geoapify.com/v1/batch/geocode/search?&apiKey={geoapify_api_key}"
     response = await client.post(url, json=waypoints)
     if response.status_code != 200:
         error = response.json()
         print(response.json().get("message"))
-    job_id = response.json().get("id")
-    batch_response = await poll_batch_geocoding(job_id)
-    return batch_response
+    job_id: str = response.json().get("id")
+    return job_id
 
 
 async def poll_batch_geocoding(job_id: str, max_wait: int = 30, interval: int = 2) -> list[dict] | None:

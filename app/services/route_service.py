@@ -7,20 +7,31 @@ from app.models.chatgpt_response import Route
 from app.apis import geoapify
 
 
-def generate_route(user_input: UserInput):
+async def generate_route(user_input: UserInput):
 
-    generated_route: Route | None = None
     generated_route_string = openai.prompt_azure_ai(
         user_input.start_point, user_input.end_point, user_input.user_prompt
     )
+    print(generated_route_string)
+
+    generated_route: Route | None = None
 
     try:
-        generated_route = Route.model_validate(generated_route_string)
+        generated_route: Route = Route.model_validate_json(generated_route_string)
     except ValidationError as e:
         print(e)
 
-    addresses_array: list[str] = [wp.address for wp in generated_route.waypoints]
-    geoapify.start_batch_geocoding(addresses_array)
+    addresses_array: list[str] = [wp.address if wp.address else wp.name for wp in generated_route.waypoints]
+    geocoding_id = await geoapify.start_batch_geocoding(addresses_array)
+    geocoding_result = await geoapify.poll_batch_geocoding(geocoding_id)
+    print(geocoding_result)
+
+    waypoints: list[str] = [f"{entry['lat']},{entry['lon']}" for entry in geocoding_result if
+                            'lon' in entry and 'lat' in entry]
+    print(waypoints)
+
+    route = await geoapify.call_geoapify_routes(waypoints)
+    return route
 
 async def test_generate_route() -> list[dict]:
     generated_route_string: str = """{
@@ -134,7 +145,8 @@ async def test_generate_route() -> list[dict]:
         print(e)
 
     addresses_array: list[str] = [wp.address if wp.address else wp.name for wp in generated_route.waypoints]
-    geocoding_result = await geoapify.start_batch_geocoding(addresses_array)
+    geocoding_id = await geoapify.start_batch_geocoding(addresses_array)
+    geocoding_result = await geoapify.poll_batch_geocoding(geocoding_id)
     print(geocoding_result)
 
     waypoints: list[str] = [f"{entry['lat']},{entry['lon']}" for entry in geocoding_result if 'lon' in entry and 'lat' in entry]
