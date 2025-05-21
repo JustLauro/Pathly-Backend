@@ -9,7 +9,7 @@ class AliasModel(BaseModel):
 class UserInput(AliasModel):
     start_point: str = Field(..., alias = "start")
     end_point: str = Field(..., alias = "ziel")
-    distance: str = Field(..., alias = "entfernung")
-    user_prompt: str = Field(..., alias = "optionen")
+    distance: str | None = Field(..., alias = "entfernung")
+    user_prompt: str | None = Field(..., alias = "optionen")
     roundtrip: bool = Field(..., alias = "rundreise")
     mode: str
