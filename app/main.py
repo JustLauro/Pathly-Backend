@@ -8,7 +8,7 @@ from app.apis.geoapify import call_geoapify_routes
 
 app = FastAPI()
 
-@app.get("/api/generate-route")
+@app.post("/api/generate-route")
 async def start_route_generation(user_input: UserInput):
     print(user_input)
     return JSONResponse(await route_service.generate_route(user_input))
