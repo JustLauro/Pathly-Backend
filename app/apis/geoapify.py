@@ -22,7 +22,7 @@ def build_routes_request_url(waypoints: list[str], mode: TravelMode) -> str:
     final_url: str = f"""https://api.geoapify.com/v1/routing?waypoints={waypoint_string}&mode={mode}&units=metric&format=geojson&apiKey={geoapify_api_key}"""
     return final_url
 
-async def call_geoapify_routes(waypoints: list[str], mode: TravelMode) -> list[dict]:
+async def call_geoapify_routes(waypoints: list[str], mode: TravelMode) -> dict:
     client = httpx.AsyncClient()
     response = await client.get(build_routes_request_url(waypoints, mode))
     return response.json()
@@ -39,7 +39,7 @@ async def start_batch_geocoding(waypoints: list[str]) -> str:
     return job_id
 
 
-async def poll_batch_geocoding(job_id: str, max_wait: int = 30, interval: int = 2) -> list[dict] | None:
+async def poll_batch_geocoding(job_id: str, max_wait: int = 30, interval: int = 2) -> dict | None:
     client = httpx.AsyncClient()
     url = f"https://api.geoapify.com/v1/batch/geocode/search?id={job_id}&apiKey={geoapify_api_key}&format=json"
 
