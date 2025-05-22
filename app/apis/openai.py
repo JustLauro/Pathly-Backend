@@ -10,7 +10,7 @@ azureai_endpoint: str = settings.azureai_endpoint
 
 def build_prompt(
         start_point: str,
-        end_point: str,
+        end_point: str | None,
         distance: str | None,
         mode: TravelMode,
         user_prompt: str | None = None,
@@ -66,9 +66,14 @@ def build_prompt(
 
 
 def prompt_azure_ai(
-    start_point: str, end_point: str, user_prompt: str | None = None
+        start_point: str,
+        end_point: str | None,
+        distance: str | None,
+        mode: TravelMode,
+        user_prompt: str | None = None,
+        roundtrip: bool = False
 ) -> str:
-    built_prompt = build_prompt(start_point, end_point, user_prompt)
+    built_prompt = build_prompt(start_point, end_point, distance, mode, user_prompt, roundtrip)
 
     client = AzureOpenAI(
         azure_endpoint = azureai_endpoint,

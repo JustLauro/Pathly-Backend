@@ -11,17 +11,13 @@ from app.models.user_input import TravelMode
 async def generate_route(user_input: UserInput):
 
     start_point: str = user_input.start_point
-    if user_input.roundtrip:
-        end_point: str = start_point
-    else:
-        end_point: str = user_input.end_point
+    end_point: str = user_input.end_point
     distance: str = user_input.distance
-    user_prompt = user_input.user_prompt
     mode: TravelMode = user_input.mode
+    user_prompt: str = user_input.user_prompt
+    roundtrip: bool = user_input.roundtrip
 
-    generated_route_string = openai.prompt_azure_ai(
-        start_point, user_input.end_point, user_input.user_prompt
-    )
+    generated_route_string = openai.prompt_azure_ai(start_point, end_point, distance, mode, user_prompt, roundtrip)
     print(generated_route_string)
 
     generated_route: Route | None = None
@@ -40,7 +36,7 @@ async def generate_route(user_input: UserInput):
                             'lon' in entry and 'lat' in entry]
     print(waypoints)
 
-    route = await geoapify.call_geoapify_routes(waypoints)
+    route = await geoapify.call_geoapify_routes(waypoints, mode)
     return route
 
 # async def test_generate_route() -> list[dict]:

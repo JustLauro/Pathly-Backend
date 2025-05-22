@@ -16,15 +16,15 @@ def build_routes_request_url(waypoints: list[str], mode: TravelMode) -> str:
         TravelMode.DRIVE: "drive",
         TravelMode.BIKE: "bicycle",
         TravelMode.WALK: "hike"
-    }
+    }.get(mode)
 
     waypoint_string: str = "|".join(waypoints)
     final_url: str = f"""https://api.geoapify.com/v1/routing?waypoints={waypoint_string}&mode={mode}&units=metric&format=geojson&apiKey={geoapify_api_key}"""
     return final_url
 
-async def call_geoapify_routes(waypoints: list[str]) -> list[dict]:
+async def call_geoapify_routes(waypoints: list[str], mode: TravelMode) -> list[dict]:
     client = httpx.AsyncClient()
-    response = await client.get(build_routes_request_url(waypoints))
+    response = await client.get(build_routes_request_url(waypoints, mode))
     return response.json()
     
 
