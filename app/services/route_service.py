@@ -7,6 +7,11 @@ from app.models.chatgpt_response import Route
 from app.apis import geoapify
 from app.models.user_input import TravelMode
 
+def combine_waypoints_and_geojson(waypoints: list[str], geojson: dict) -> dict:
+    return {
+        "geojson": geojson,
+        "waypoints": waypoints
+    }
 
 async def generate_route(user_input: UserInput):
 
@@ -28,6 +33,7 @@ async def generate_route(user_input: UserInput):
         print(e)
 
     addresses_array: list[str] = [wp.address if wp.address else wp.name for wp in generated_route.waypoints]
+    waypoint_names: list[str] = [wp.name for wp in generated_route.waypoints]
     geocoding_id = await geoapify.start_batch_geocoding(addresses_array)
     geocoding_result = await geoapify.poll_batch_geocoding(geocoding_id)
     print(geocoding_result)
@@ -36,8 +42,9 @@ async def generate_route(user_input: UserInput):
                             'lon' in entry and 'lat' in entry]
     print(waypoints)
 
-    route = await geoapify.call_geoapify_routes(waypoints, mode)
-    return route
+    geojson = await geoapify.call_geoapify_routes(waypoints, mode)
+
+    return combine_waypoints_and_geojson(waypoint_names, geojson)
 
 # async def test_generate_route() -> list[dict]:
 #     generated_route_string: str = """{
