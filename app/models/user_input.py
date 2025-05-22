@@ -16,7 +16,7 @@ class TravelMode(Enum):
 class UserInput(AliasModel):
     start_point: str = Field(..., alias = "start")
     end_point: str | None = Field(..., alias = "ziel")
-    distance: str | None = Field(..., alias = "entfernung")
+    distance: float | None = Field(..., alias = "entfernung")
     user_prompt: str | None = Field(..., alias = "optionen")
     roundtrip: bool = Field(..., alias = "rundreise")
     mode: TravelMode
