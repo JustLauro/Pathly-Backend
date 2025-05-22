@@ -1,18 +1,41 @@
 from openai import AzureOpenAI
 from app.models.chatgpt_response import Route
+from app.models.user_input import TravelMode
 from app.settings import settings
 
 openai_api_key: str = settings.openai_api_key
 azureai_endpoint: str = settings.azureai_endpoint
 
 
+
 def build_prompt(
-    start_point: str, end_point: str, user_prompt: str | None = None
+        start_point: str,
+        end_point: str,
+        distance: str | None,
+        mode: TravelMode,
+        user_prompt: str | None = None,
+        roundtrip: bool = False
 ) -> str:
-    generated_prompt: str = f"""Deine Aufgabe ist es eine "Wanderroute" zu erstellen. Der Startpunkt ist bei "{start_point}".
-                            Der Endpunkt ist bei "{end_point}".
+
+    travel_mode_description = {
+        TravelMode.WALK: "eine Wandertour",
+        TravelMode.BIKE: "eine Fahrradtour",
+        TravelMode.DRIVE: "eine Autofahrt"
+    }.get(mode)
+
+
+    if roundtrip:
+        start_end_info: str = f'Die Route sollte ein Rundweg sein. Start- und Endpunkt sind bei "{start_point}"'
+    else:
+        start_end_info: str = f'Der Startpunkt ist bei "{start_point}" und der Endpunkt ist bei "{end_point}"'
+
+
+    generated_prompt: str = f"""Deine Aufgabe ist es eine "Wanderroute" zu erstellen. 
+                            {start_end_info}.
+                            Die Route soll {distance} Kilometer lang sein.
+                            Die Route sollte geeignet sein für {travel_mode_description}.
                             Berücksichtige bei deiner Berechnung bitte folgenden Userprompt: "{user_prompt}".
-                            Ermittele zuerst eine Wanderroute. Ermittele ausreichend Wegpunkte entlang der Route. 
+                            Ermittele zuerst eine Route. Ermittele ausreichend Wegpunkte entlang der Route. 
                             Ermittel für diese Wegpunkte einen Eindeutigen Namen (inklusive Land und Stadt, mit dem der Punkt in Google Maps eindeutig identifizierbar ist),
                             sowie Adresse oder Koordinaten wenn es keine Adresse gibt. Gebe NUR eine JSON Datei zurück die wie folgt aufgebaut ist:
                             {{
