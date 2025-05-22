@@ -59,7 +59,8 @@ def build_prompt(
                                     ]
                             }}.
                             Die Id soll bei jedem waypoint um 1 erhöht werden und einzigartig sein. Füge für jeden Wegpunkt ein Element "waypoint" mit den gesuchten Attributen 
-                            hinzu und zähle dabei die Zahl am ende der Variable hoch. Setze Werte die du nicht findest (also z.b. die zu denen du keine Adresse findest) auf "null". 
+                            hinzu und zähle dabei die Zahl am ende der Variable hoch. Start und Endpunkt sollen auch explizit als waypoints aufgelistet sein. 
+                            Setze Werte die du nicht findest (also z.b. die zu denen du keine Adresse findest) auf "null". 
                             Bitte gib ausschließlich den JSON-String zurück, ohne ein vorrangestelltes 'json' oder Anführungsstriche"""
 
     return generated_prompt
