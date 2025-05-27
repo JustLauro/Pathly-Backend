@@ -1,6 +1,8 @@
 import json
 
 from pydantic import ValidationError
+
+from app.models.edit_input import EditedWaypointList
 from app.models.user_input import UserInput
 from app.apis import openai
 from app.models.chatgpt_response import Route
@@ -13,11 +15,33 @@ def combine_waypoints_and_geojson(waypoints: list[str], geojson: dict) -> dict:
         "waypoints": waypoints
     }
 
+
+async def edit_route(edited_waypoints: EditedWaypointList):
+
+    coordinates: list[str] = []
+    waypoint_names: list[str] = []
+    travel_mode: str = edited_waypoints.mode
+
+    for wp in edited_waypoints.waypoints:
+        coordinates.append(wp.coordinates)
+        waypoint_names.append(wp.name)
+
+    mode = {
+        "drive": TravelMode.DRIVE,
+        "bicycle": TravelMode.BIKE,
+        "hike": TravelMode.WALK
+    }.get(travel_mode)
+
+    geojson = await geoapify.call_geoapify_routes(coordinates, mode)
+
+    return combine_waypoints_and_geojson(waypoint_names, geojson)
+
+
 async def generate_route(user_input: UserInput):
 
     start_point: str = user_input.start_point
     end_point: str = user_input.end_point
-    distance: str = user_input.distance
+    distance: float = user_input.distance
     mode: TravelMode = user_input.mode
     user_prompt: str = user_input.user_prompt
     roundtrip: bool = user_input.roundtrip

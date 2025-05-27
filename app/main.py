@@ -4,8 +4,10 @@ from fastapi.responses import JSONResponse
 from app.apis import openai
 from app.services import route_service
 from app.models.user_input import UserInput
+from app.models.edit_input import EditedWaypointList
 from app.apis.geoapify import call_geoapify_routes
 from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
@@ -26,6 +28,11 @@ app.add_middleware(
 async def start_route_generation(user_input: UserInput):
     print(user_input)
     return JSONResponse(await route_service.generate_route(user_input))
+
+@app.post("/api/edit-route")
+async def edit_route(waypoints: EditedWaypointList):
+    return JSONResponse(await route_service.edit_route(waypoints))
+
 
 @app.get("/api/test-generate-route")
 async def test_route_generation():
