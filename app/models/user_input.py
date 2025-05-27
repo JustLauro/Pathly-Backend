@@ -9,7 +9,7 @@ class AliasModel(BaseModel):
 
 class TravelMode(Enum):
     WALK = "walk"
-    BIKE = "bike"
+    BIKE = "bicycle"
     DRIVE = "drive"
 
 
