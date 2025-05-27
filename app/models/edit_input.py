@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class Waypoint(BaseModel):
     name: str
-    coordinates: str
+    coordinates: list[float]
 
 class EditedWaypointList(BaseModel):
     waypoints: list[Waypoint]

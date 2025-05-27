@@ -18,6 +18,7 @@ def build_routes_request_url(waypoints: list[str], travel_mode: TravelMode) -> s
         TravelMode.WALK: "hike"
     }.get(travel_mode)
 
+
     waypoint_string: str = "|".join(waypoints)
     final_url: str = f"""https://api.geoapify.com/v1/routing?waypoints={waypoint_string}&mode={mode}&units=metric&format=geojson&apiKey={geoapify_api_key}"""
     return final_url
