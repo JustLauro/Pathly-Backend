@@ -1,7 +1,6 @@
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
-from pydantic.alias_generators import to_camel
 
 class AliasModel(BaseModel):
     class Config:

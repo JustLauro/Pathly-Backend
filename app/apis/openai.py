@@ -11,7 +11,7 @@ azureai_endpoint: str = settings.azureai_endpoint
 def build_prompt(
         start_point: str,
         end_point: str | None,
-        distance: str | None,
+        distance: float | None,
         mode: TravelMode,
         user_prompt: str | None = None,
         roundtrip: bool = False
@@ -69,7 +69,7 @@ def build_prompt(
 def prompt_azure_ai(
         start_point: str,
         end_point: str | None,
-        distance: str | None,
+        distance: float | None,
         mode: TravelMode,
         user_prompt: str | None = None,
         roundtrip: bool = False
