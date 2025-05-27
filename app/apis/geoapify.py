@@ -22,7 +22,6 @@ def build_routes_request_url(waypoints: list[str], travel_mode: TravelMode) -> s
     return final_url
 
 async def call_geoapify_routes(waypoints: list[str], mode: TravelMode) -> dict:
-    print ("Wegpunkte: " + '\n'.join(waypoints))
     client = httpx.AsyncClient()
     response = await client.get(build_routes_request_url(waypoints, mode))
     return response.json()
@@ -34,7 +33,6 @@ async def start_batch_geocoding(waypoints: list[str]) -> str:
     response = await client.post(url, json=waypoints)
     if response.status_code != 200:
         error = response.json()
-        print(response.json().get("message"))
     job_id: str = response.json().get("id")
     return job_id
 

@@ -3,8 +3,9 @@ from enum import Enum
 from pydantic import BaseModel, ConfigDict, Field
 
 class AliasModel(BaseModel):
-    class Config:
-        allow_population_by_field_name = True
+    model_config = ConfigDict(
+        validate_by_name= True
+    )
 
 class TravelMode(Enum):
     WALK = "walk"

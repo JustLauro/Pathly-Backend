@@ -1,3 +1,5 @@
+import sys
+
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import logging
@@ -5,12 +7,14 @@ from app.apis import openai
 from app.services import route_service
 from app.models.user_input import UserInput
 from app.models.edit_input import EditedWaypointList
-from app.apis.geoapify import call_geoapify_routes
 from fastapi.middleware.cors import CORSMiddleware
 
 logging.basicConfig(
+    handlers=[
+        logging.FileHandler(filename="app.log", encoding="utf-8", mode="a"),
+        logging.StreamHandler(stream=sys.stdout),
+    ],
     level=logging.INFO,
-    filename="fastapi.log"
  )
 
 logger = logging.getLogger(__name__)
@@ -32,7 +36,6 @@ app.add_middleware(
 @app.post("/api/generate-route")
 async def start_route_generation(user_input: UserInput):
     logger.info("Route generation started")
-    print(user_input)
     return JSONResponse(await route_service.generate_route(user_input))
 
 @app.post("/api/edit-route")
