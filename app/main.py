@@ -25,7 +25,8 @@ app = FastAPI(title="Pathly", version="1.0")
 
 origins = [
     "http://localhost:5173",
-    "http://localhost"
+    "http://localhost",
+    "https://thankful-plant-0d748f703.6.azurestaticapps.net"
 ]
 
 app.add_middleware(
@@ -36,6 +37,9 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+@app.get("/")
+def get_root():
+    return JSONResponse({"hello": "world"})
 @app.post("/api/generate-route")
 async def start_route_generation(user_input: UserInput):
     logger.info("Route generation started")

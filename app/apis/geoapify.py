@@ -1,14 +1,18 @@
 import asyncio
+import os
+
 import httpx
 
 from app.models.user_input import TravelMode
-from app.config.settings import settings
+from app.config.settings import get_settings
 
 
-geoapify_api_key: str = settings.geoapify_api_key
+#geoapify_api_key: str = os.getenv("GEOAPIFY_API_KEY")
 
 
 def build_routes_request_url(waypoints: list[str], travel_mode: TravelMode) -> str:
+    settings = get_settings()
+    geoapify_api_key: str = settings.geoapify_api_key
 
     mode = {
         TravelMode.DRIVE: "drive",
@@ -28,6 +32,9 @@ async def call_geoapify_routes(waypoints: list[str], mode: TravelMode) -> dict:
     
 
 async def start_batch_geocoding(waypoints: list[str]) -> str:
+    settings = get_settings()
+    geoapify_api_key: str = settings.geoapify_api_key
+
     client = httpx.AsyncClient()
     url = f"https://api.geoapify.com/v1/batch/geocode/search?&apiKey={geoapify_api_key}"
     response = await client.post(url, json=waypoints)
@@ -37,12 +44,15 @@ async def start_batch_geocoding(waypoints: list[str]) -> str:
     return job_id
 
 
-async def poll_batch_geocoding(job_id: str, max_wait: int = 30, interval: int = 2) -> dict | None:
+async def poll_batch_geocoding(job_id: str, max_wait: int = 20, interval: int = 1) -> dict | None:
+    settings = get_settings()
+    geoapify_api_key: str = settings.geoapify_api_key
+
     client = httpx.AsyncClient()
     url = f"https://api.geoapify.com/v1/batch/geocode/search?id={job_id}&apiKey={geoapify_api_key}&format=json"
 
-    for i in range(0, max_wait, 2):
-        print("Poll Nr.: " + str(i / 2 + 1))
+    for i in range(1, max_wait + 1, 1):
+        print("Poll Nr.: " + str(i))
         response = await client.get(url)
         if response.status_code == 200:
             data = response.json()

@@ -1,9 +1,14 @@
+import os
+
 from openai import AzureOpenAI
 from app.models.user_input import TravelMode
-from app.config.settings import settings
+from app.config.settings import get_settings
 
+settings = get_settings()
 openai_api_key: str = settings.openai_api_key
+#openai_api_key: str = os.getenv("OPENAI_API_KEY")
 azureai_endpoint: str = settings.azureai_endpoint
+#azureai_endpoint: str = os.getenv("AZUREAI_ENDPOINT")
 
 
 
@@ -36,7 +41,8 @@ def build_prompt(
                             Berücksichtige bei deiner Berechnung bitte folgenden Userprompt: "{user_prompt}".
                             Ermittele zuerst eine Route. Ermittele ausreichend Wegpunkte entlang der Route. 
                             Ermittel für diese Wegpunkte einen Eindeutigen Namen (inklusive Land und Stadt, mit dem der Punkt in Google Maps eindeutig identifizierbar ist),
-                            sowie Adresse oder Koordinaten wenn es keine Adresse gibt. Gebe NUR eine JSON Datei zurück die wie folgt aufgebaut ist:
+                            sowie Adresse oder Koordinaten wenn es keine Adresse gibt. Schreibe zu "name" auch immer unbedingt die Stadt und das Land mit dazu. (z.B. Hauptbahnhof, Leipzig, Deutschland).
+                            Gebe NUR eine JSON Datei zurück die wie folgt aufgebaut ist:
                             {{
                                 "nameOfTheRoute": "", 
                                 "startPoint": "", 
@@ -59,7 +65,7 @@ def build_prompt(
                             }}.
                             Die Id soll bei jedem waypoint um 1 erhöht werden und einzigartig sein. Füge für jeden Wegpunkt ein Element "waypoint" mit den gesuchten Attributen 
                             hinzu und zähle dabei die Zahl am ende der Variable hoch. Start und Endpunkt sollen auch explizit als waypoints aufgelistet sein. 
-                            Setze Werte die du nicht findest (also z.b. die zu denen du keine Adresse findest) auf "null". 
+                            Setze Werte die du nicht findest (also z.b. die zu denen du keine Adresse findest) auf null (ohne Anführungszeichen). 
                             Bitte gib ausschließlich den JSON-String zurück, ohne ein vorrangestelltes 'json' oder Anführungsstriche"""
 
     return generated_prompt
@@ -73,6 +79,12 @@ def prompt_azure_ai(
         user_prompt: str | None = None,
         roundtrip: bool = False
 ) -> str:
+    settings = get_settings()
+    openai_api_key: str = settings.openai_api_key
+    # openai_api_key: str = os.getenv("OPENAI_API_KEY")
+    azureai_endpoint: str = settings.azureai_endpoint
+    # azureai_endpoint: str = os.getenv("AZUREAI_ENDPOINT")
+
     built_prompt = build_prompt(start_point, end_point, distance, mode, user_prompt, roundtrip)
 
     client = AzureOpenAI(
