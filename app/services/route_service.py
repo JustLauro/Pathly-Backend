@@ -23,7 +23,8 @@ async def edit_route(edited_waypoints: EditedWaypointList):
     travel_mode: str = edited_waypoints.mode
 
     for wp in edited_waypoints.waypoints:
-        waypoints_string = ",".join(map(str, wp.coordinates))
+        reversed_coords = wp.coordinates[::-1]
+        waypoints_string = ",".join(map(str, reversed_coords))
 
         coordinates.append(waypoints_string)
         waypoint_names.append(wp.name)
