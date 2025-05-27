@@ -1,7 +1,6 @@
 from openai import AzureOpenAI
-from app.models.chatgpt_response import Route
 from app.models.user_input import TravelMode
-from app.settings import settings
+from app.config.settings import settings
 
 openai_api_key: str = settings.openai_api_key
 azureai_endpoint: str = settings.azureai_endpoint

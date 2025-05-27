@@ -1,10 +1,8 @@
 import asyncio
-import json
-from typing import Any, Coroutine
 import httpx
 
 from app.models.user_input import TravelMode
-from app.settings import settings
+from app.config.settings import settings
 
 
 geoapify_api_key: str = settings.geoapify_api_key
